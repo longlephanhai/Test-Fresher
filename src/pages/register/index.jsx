@@ -16,6 +16,7 @@ const RegisterPage = () => {
         autoComplete="off"
       >
         <Form.Item
+          labelCol={{ span: 24 }}
           label="Full Name:"
           name="fullName"
           rules={[{ required: true, message: 'Please input your full name!' }]}
@@ -24,7 +25,7 @@ const RegisterPage = () => {
         </Form.Item>
 
         <Form.Item
-
+          labelCol={{ span: 24 }}
           label="Email:"
           name="email"
           rules={[{ type: 'email', required: true, message: 'Please input your email!' }]}
@@ -33,6 +34,7 @@ const RegisterPage = () => {
         </Form.Item>
 
         <Form.Item
+          labelCol={{ span: 24 }}
           label="Password"
           name="password"
           rules={[{ required: true, message: 'Please input your password!' }]}
@@ -41,6 +43,7 @@ const RegisterPage = () => {
         </Form.Item>
 
         <Form.Item
+          labelCol={{ span: 24 }}
           label="Phone:"
           name="phone"
           rules={[{ required: true, message: 'Please input your phone number!' }]}
@@ -48,8 +51,10 @@ const RegisterPage = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-          <Button type="primary" htmlType="submit">
+        <Form.Item
+        // wrapperCol={{ offset: 6, span: 16 }}
+        >
+          <Button type="primary" htmlType="submit" loading={true}>
             Register
           </Button>
         </Form.Item>
