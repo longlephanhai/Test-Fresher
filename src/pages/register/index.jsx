@@ -1,11 +1,27 @@
-import { Button, Checkbox, Divider, Form, Input } from 'antd';
-const onFinish = values => {
-  console.log('Success:', values);
-};
+import { Button, Divider, Form, Input, message } from 'antd';
+import axios from '../../utils/axios.customize';
+import { useState } from 'react';
+import { handleRegister } from '../../services/api';
+
+
 
 const RegisterPage = () => {
+  const [messageApi, contextHolder] = message.useMessage()
+  const [isSubmit, setIsSubmit] = useState(false)
+
+  const onFinish = async (values) => {
+    setIsSubmit(true)
+    const response = await handleRegister(values)
+    setIsSubmit(false)
+    if (response?.data) {
+      messageApi.success('Registration successful!')
+    } else {
+      messageApi.error('Registration failed. Please try again.')
+    }
+  };
   return (
     <div className='register-page' style={{ padding: '50px' }}>
+      {contextHolder}
       <h3>Register</h3>
       <Divider />
       <Form
@@ -54,7 +70,7 @@ const RegisterPage = () => {
         <Form.Item
         // wrapperCol={{ offset: 6, span: 16 }}
         >
-          <Button type="primary" htmlType="submit" loading={true}>
+          <Button type="primary" htmlType="submit" loading={isSubmit}>
             Register
           </Button>
         </Form.Item>
