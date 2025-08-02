@@ -10,6 +10,10 @@ import ContactPage from "./pages/contact";
 import BookPage from "./pages/book";
 import HomePage from "./pages/home";
 import RegisterPage from "./pages/register";
+import { useEffect } from "react";
+import { handleFetchAccount } from "./services/api";
+import { useDispatch } from "react-redux";
+import { doGetAccountAction } from "./redux/account/accountSlice";
 
 const Layout = () => {
   return (
@@ -22,6 +26,17 @@ const Layout = () => {
 }
 
 export default function App() {
+  const dispatch = useDispatch()
+  const fetchAccount = async () => {
+    const response = await handleFetchAccount();
+    console.log(response);
+    if (response?.data) {
+      dispatch(doGetAccountAction(response.data));
+    }
+  }
+  useEffect(() => {
+    fetchAccount()
+  }, [])
 
   const router = createBrowserRouter([
     {
