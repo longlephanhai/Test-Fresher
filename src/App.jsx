@@ -29,12 +29,31 @@ const Layout = () => {
   )
 }
 
+const LayoutAdmin = () => {
+  const isAdminRoute = window.location.pathname.startsWith('/admin');
+  const user = useSelector(state => state.account.user)
+  const userRole = user.role;
+  return (
+    <>
+      {isAdminRoute && userRole === "ADMIN" && <Header />}
+      {/* <Header /> */}
+      <Outlet />
+      {/* <Footer /> */}
+      {isAdminRoute && userRole === "ADMIN" && <Footer />}
+    </>
+  )
+}
+
 export default function App() {
   const dispatch = useDispatch()
   const isAuthenticated = useSelector(state => state.account.isAuthenticated)
 
   const fetchAccount = async () => {
-    if (window.location.pathname === '/login' || window.location.pathname === '/register') {
+    if (
+      window.location.pathname === '/login'
+      || window.location.pathname === '/register'
+      // || window.location.pathname === '/'
+    ) {
       return;
     }
     const response = await handleFetchAccount();
@@ -68,7 +87,7 @@ export default function App() {
     },
     {
       path: 'admin',
-      element: <Layout />,
+      element: <LayoutAdmin />,
       errorElement: <NotFound />,
       children: [
         {

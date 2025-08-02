@@ -23,7 +23,7 @@ export const accountSlice = createSlice({
     },
     doGetAccountAction: (state, action) => {
       state.isAuthenticated = true;
-      state.user = action.payload;
+      state.user = action.payload.user;
     }
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
