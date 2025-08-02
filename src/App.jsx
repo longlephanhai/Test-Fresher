@@ -18,6 +18,9 @@ import Loading from "./components/loading";
 import NotFound from "./components/notfound";
 import AdminPage from "./pages/admin";
 import ProtectedRoute from "./components/protectedroute";
+import LayoutAdmin from "./components/admin/layout";
+
+
 
 const Layout = () => {
   return (
@@ -29,20 +32,6 @@ const Layout = () => {
   )
 }
 
-const LayoutAdmin = () => {
-  const isAdminRoute = window.location.pathname.startsWith('/admin');
-  const user = useSelector(state => state.account.user)
-  const userRole = user.role;
-  return (
-    <>
-      {isAdminRoute && userRole === "ADMIN" && <Header />}
-      {/* <Header /> */}
-      <Outlet />
-      {/* <Footer /> */}
-      {isAdminRoute && userRole === "ADMIN" && <Footer />}
-    </>
-  )
-}
 
 export default function App() {
   const dispatch = useDispatch()
