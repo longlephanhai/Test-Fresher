@@ -12,8 +12,12 @@ import HomePage from "./pages/home";
 import RegisterPage from "./pages/register";
 import { useEffect } from "react";
 import { handleFetchAccount } from "./services/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doGetAccountAction } from "./redux/account/accountSlice";
+import Loading from "./components/loading";
+import NotFound from "./components/notfound";
+import AdminPage from "./pages/admin";
+import ProtectedRoute from "./components/protectedroute";
 
 const Layout = () => {
   return (
@@ -27,9 +31,13 @@ const Layout = () => {
 
 export default function App() {
   const dispatch = useDispatch()
+  const isAuthenticated = useSelector(state => state.account.isAuthenticated)
+
   const fetchAccount = async () => {
+    if (window.location.pathname === '/login' || window.location.pathname === '/register') {
+      return;
+    }
     const response = await handleFetchAccount();
-    console.log(response);
     if (response?.data) {
       dispatch(doGetAccountAction(response.data));
     }
@@ -42,7 +50,7 @@ export default function App() {
     {
       path: "/",
       element: <Layout />,
-      errorElement: <div>404 Not Found</div>,
+      errorElement: <NotFound />,
       children: [
         {
           index: true,
@@ -59,6 +67,19 @@ export default function App() {
       ]
     },
     {
+      path: 'admin',
+      element: <Layout />,
+      errorElement: <NotFound />,
+      children: [
+        {
+          index: true,
+          element: <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        }
+      ]
+    },
+    {
       path: "/login",
       element: <LoginPage />,
     },
@@ -70,7 +91,12 @@ export default function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      {
+        isAuthenticated === true || window.location.pathname === '/login' || window.location.pathname === '/register' ?
+          <RouterProvider router={router} />
+          :
+          <Loading />
+      }
     </>
   );
 }
