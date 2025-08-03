@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Table, Row, Col, Button, Space } from 'antd';
 import InputSearch from './InputSearch';
 import { callFetchUsers } from '../../../services/api';
-import { render } from 'react-dom';
+import UserViewDetail from './UserDetail';
+import { CloudUploadOutlined, ExportOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 
 
 const UserTable = () => {
@@ -14,6 +15,12 @@ const UserTable = () => {
     const [data, setData] = useState([])
 
     const [sort, setSort] = useState("")
+
+    const [openModalCreate, setOpenModalCreate] = useState(false);
+
+    const [openViewDetail, setOpenViewDetail] = useState(false);
+    const [dataViewDetail, setDataViewDetail] = useState(null);
+
 
 
 
@@ -36,7 +43,11 @@ const UserTable = () => {
             sorter: true,
             render: (text, record, index) => {
                 return (
-                    <a href="#" onClick={() => { }}>
+                    <a href="#" onClick={() => {
+                        setDataViewDetail(record);
+                        setOpenViewDetail(true);
+
+                    }}>
                         {record._id}
                     </a>
                 )
@@ -99,6 +110,41 @@ const UserTable = () => {
             setTotal(response.data.meta.total);
         }
     }
+
+    // change button color: https://ant.design/docs/react/customize-theme#customize-design-token
+    const renderHeader = () => {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Table List Users</span>
+                <span style={{ display: 'flex', gap: 15 }}>
+                    <Button
+                        icon={<ExportOutlined />}
+                        type="primary"
+                    >Export</Button>
+
+                    <Button
+                        icon={<CloudUploadOutlined />}
+                        type="primary"
+                    >Import</Button>
+
+                    <Button
+                        icon={<PlusOutlined />}
+                        type="primary"
+                        onClick={() => setOpenModalCreate(true)}
+                    >Thêm mới</Button>
+                    <Button type='ghost' onClick={() => {
+                        setFilter("");
+                        setSortQuery("")
+                    }}>
+                        <ReloadOutlined />
+                    </Button>
+
+
+                </span>
+            </div>
+        )
+    }
+
     return (
         <>
             <Row gutter={[20, 20]}>
@@ -107,6 +153,7 @@ const UserTable = () => {
                 </Col>
                 <Col span={24}>
                     <Table
+                        title={renderHeader}
                         className='def'
                         rowKey="_id"
                         columns={columns}
@@ -124,6 +171,13 @@ const UserTable = () => {
                     />
                 </Col>
             </Row>
+
+            <UserViewDetail
+                openViewDetail={openViewDetail}
+                setOpenViewDetail={setOpenViewDetail}
+                dataViewDetail={dataViewDetail}
+                setDataViewDetail={setDataViewDetail}
+            />
         </>
     )
 }
