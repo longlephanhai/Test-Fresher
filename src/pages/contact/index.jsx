@@ -1,10 +1,10 @@
+import UserTable from '../../components/admin/User/UserTable'
 const ContactPage = () => {
     return (
         <>
-
-            Contact Page
+            <UserTable />
         </>
     )
 }
 
-export default ContactPage
+export default ContactPage;
