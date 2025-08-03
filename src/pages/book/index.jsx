@@ -1,7 +1,9 @@
-const BookPage=()=>{
-  return (
-    <div>Book Page</div>
-  )
+const BookPage = () => {
+    return (
+        <>
+            book page
+        </>
+    )
 }
 
 export default BookPage;

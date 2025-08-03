@@ -1,67 +1,92 @@
-import { Button, Divider, Form, Input, message } from 'antd';
+import { Button, Divider, Form, Input, message, notification } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { callLogin } from '../../services/api';
+import './login.scss';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { handleLogin } from '../../services/api';
 import { useDispatch } from 'react-redux';
 import { doLoginAction } from '../../redux/account/accountSlice';
+
 const LoginPage = () => {
-  const [isSubmit, setIsSubmit] = useState(false)
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const [isSubmit, setIsSubmit] = useState(false);
 
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const onFinish = async (values) => {
-    setIsSubmit(true)
-    const response = await handleLogin(values)
-    setIsSubmit(false)
-    if (response?.data) {
-      localStorage.setItem('access_token', response.data.access_token)
-      dispatch(doLoginAction(response.data.user))
-      message.success('Login successful!')
-      navigate('/')
-    } else {
-      message.error(response?.message)
-    }
-  };
-  return (
-    <>
-      <div className='register-page' style={{ padding: '50px' }}>
-        <h3>Login</h3>
-        <Divider />
-        <Form
-          name="basic"
-          labelCol={{ span: 6 }}
-          style={{ maxWidth: 600, margin: '0 auto' }}
-          onFinish={onFinish}
-          autoComplete="off"
-        >
-          <Form.Item
-            labelCol={{ span: 24 }}
-            label="Email:"
-            name="username"
-            rules={[{ type: 'email', required: true, message: 'Please input your email!' }]}
-          >
-            <Input />
-          </Form.Item>
+    const onFinish = async (values) => {
 
-          <Form.Item
-            labelCol={{ span: 24 }}
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password />
-          </Form.Item>
+        const { username, password } = values;
+        setIsSubmit(true);
+        const res = await callLogin(username, password);
+        setIsSubmit(false);
+        if (res?.data) {
+            localStorage.setItem('access_token', res.data.access_token);
+            dispatch(doLoginAction(res.data.user))
+            message.success('Đăng nhập tài khoản thành công!');
+            navigate('/')
+        } else {
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description:
+                    res.message && Array.isArray(res.message) ? res.message[0] : res.message,
+                duration: 5
+            })
+        }
+    };
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isSubmit}>
-              Login
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    </>
-  )
+
+    return (
+        <div className="login-page">
+            <main className="main">
+                <div className="container">
+                    <section className="wrapper">
+                        <div className="heading">
+                            <h2 className="text text-large">Đăng Nhập</h2>
+                            <Divider />
+
+                        </div>
+                        <Form
+                            name="basic"
+                            // style={{ maxWidth: 600, margin: '0 auto' }}
+                            onFinish={onFinish}
+                            autoComplete="off"
+                        >
+                            <Form.Item
+                                labelCol={{ span: 24 }} //whole column
+                                label="Email"
+                                name="username"
+                                rules={[{ required: true, message: 'Email không được để trống!' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+
+                            <Form.Item
+                                labelCol={{ span: 24 }} //whole column
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[{ required: true, message: 'Mật khẩu không được để trống!' }]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
+
+                            <Form.Item
+                            // wrapperCol={{ offset: 6, span: 16 }}
+                            >
+                                <Button type="primary" htmlType="submit" loading={isSubmit}>
+                                    Đăng nhập
+                                </Button>
+                            </Form.Item>
+                            <Divider>Or</Divider>
+                            <p className="text text-normal">Chưa có tài khoản ?
+                                <span>
+                                    <Link to='/register' > Đăng Ký </Link>
+                                </span>
+                            </p>
+                        </Form>
+                    </section>
+                </div>
+            </main>
+        </div>
+    )
 }
 
 export default LoginPage;
