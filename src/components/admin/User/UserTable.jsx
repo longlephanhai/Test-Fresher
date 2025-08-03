@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Table, Row, Col, Button, Space } from 'antd';
 import InputSearch from './InputSearch';
 import { callFetchUsers } from '../../../services/api';
+import { render } from 'react-dom';
 
 
 const UserTable = () => {
@@ -11,6 +12,10 @@ const UserTable = () => {
     const [total, setTotal] = useState(0);
 
     const [data, setData] = useState([])
+
+    const [sort, setSort] = useState("")
+
+
 
     const fetchData = async () => {
         const query = `current=${current}&pageSize=${pageSize}`;
@@ -28,7 +33,14 @@ const UserTable = () => {
         {
             title: 'ID',
             dataIndex: '_id',
-            sorter: true
+            sorter: true,
+            render: (text, record, index) => {
+                return (
+                    <a href="#" onClick={() => { }}>
+                        {record._id}
+                    </a>
+                )
+            }
         },
         {
             title: 'Full Name',
@@ -64,10 +76,23 @@ const UserTable = () => {
             setPageSize(pagination.pageSize);
             setCurrent(1);
         }
+        if (sorter.field) {
+            sorter.order === 'ascend' ? setSort(`sort=${sorter.field}`) : setSort(`sort=-${sorter.field}`)
+            handleSort(sort);
+        }
     };
 
     const handleFilter = async (query) => {
         const newQuery = `current=${current}&pageSize=${pageSize}${query}`;
+        const response = await callFetchUsers(newQuery);
+        if (response.data) {
+            setData(response.data.result);
+            setTotal(response.data.meta.total);
+        }
+    }
+
+    const handleSort = async (sort) => {
+        const newQuery = `current=${current}&pageSize=${pageSize}&${sort}`;
         const response = await callFetchUsers(newQuery);
         if (response.data) {
             setData(response.data.result);

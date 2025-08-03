@@ -25,7 +25,6 @@ const AdvancedSearchForm = (props) => {
     if (phone) {
       query += `&phone=/${phone}/i`;
     }
-    console.log('Query:', query);
     if (query) {
       props.handleFilter(query);
     }
