@@ -4,6 +4,8 @@ import InputSearch from './InputSearch';
 import { callFetchUsers } from '../../../services/api';
 import UserViewDetail from './UserDetail';
 import { CloudUploadOutlined, ExportOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import UserModalCreate from './UserModalCreate';
+import UserImport from './data/UserImport';
 
 
 const UserTable = () => {
@@ -16,11 +18,13 @@ const UserTable = () => {
 
     const [sort, setSort] = useState("")
 
-    const [openModalCreate, setOpenModalCreate] = useState(false);
-
     const [openViewDetail, setOpenViewDetail] = useState(false);
     const [dataViewDetail, setDataViewDetail] = useState(null);
 
+
+    const [openModalCreate, setOpenModalCreate] = useState(false);
+
+    const [openModalImport, setOpenModalImport] = useState(false);
 
 
 
@@ -125,6 +129,7 @@ const UserTable = () => {
                     <Button
                         icon={<CloudUploadOutlined />}
                         type="primary"
+                        onClick={() => setOpenModalImport(true)}
                     >Import</Button>
 
                     <Button
@@ -178,6 +183,17 @@ const UserTable = () => {
                 dataViewDetail={dataViewDetail}
                 setDataViewDetail={setDataViewDetail}
             />
+
+            <UserModalCreate
+                openModalCreate={openModalCreate}
+                setOpenModalCreate={setOpenModalCreate}
+            />
+
+            <UserImport
+                openModalImport={openModalImport}
+                setOpenModalImport={setOpenModalImport}
+            />
+
         </>
     )
 }

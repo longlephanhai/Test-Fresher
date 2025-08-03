@@ -7,7 +7,7 @@ import BookPage from './pages/book';
 import ContactPage from './pages/contact';
 import LoginPage from './pages/login';
 import { Outlet } from "react-router-dom";
-import Header from './components/Header';
+
 import Footer from './components/Footer';
 import Home from './components/Home';
 import RegisterPage from './pages/register';
@@ -18,8 +18,11 @@ import Loading from './components/Loading';
 import NotFound from './components/NotFound';
 import AdminPage from './pages/admin';
 import ProtectedRoute from './components/ProtectedRoute';
-import LayoutAdmin from './components/Admin/LayoutAdmin';
+
 import './styles/reset.scss';
+import Header from './components/header';
+import LayoutAdmin from './components/admin/LayoutAdmin';
+
 
 const Layout = () => {
   return (
