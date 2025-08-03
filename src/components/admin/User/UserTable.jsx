@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, Row, Col, Button, Space } from 'antd';
 import InputSearch from './InputSearch';
-import { callFetchAccount, callFetchUsers } from '../../../services/api';
+import { callFetchUsers } from '../../../services/api';
 
-// https://stackblitz.com/run?file=demo.tsx
+
 const UserTable = () => {
 
     const [current, setCurrent] = useState(1);
@@ -17,8 +17,6 @@ const UserTable = () => {
         const response = await callFetchUsers(query);
         if (response.data) {
             setData(response.data.result);
-            setCurrent(response.data.meta.current);
-            setPageSize(response.data.meta.pageSize);
             setTotal(response.data.meta.total);
         }
     }
@@ -59,7 +57,6 @@ const UserTable = () => {
     ];
 
     const onChange = (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
         if (pagination.current !== current) {
             setCurrent(pagination.current);
         }
@@ -69,15 +66,24 @@ const UserTable = () => {
         }
     };
 
+    const handleFilter = async (query) => {
+        const newQuery = `current=${current}&pageSize=${pageSize}${query}`;
+        const response = await callFetchUsers(newQuery);
+        if (response.data) {
+            setData(response.data.result);
+            setTotal(response.data.meta.total);
+        }
+    }
     return (
         <>
             <Row gutter={[20, 20]}>
                 <Col span={24}>
-                    <InputSearch />
+                    <InputSearch handleFilter={handleFilter} />
                 </Col>
                 <Col span={24}>
                     <Table
                         className='def'
+                        rowKey="_id"
                         columns={columns}
                         dataSource={data}
                         onChange={onChange}
