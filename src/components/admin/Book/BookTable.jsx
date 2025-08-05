@@ -4,6 +4,7 @@ import { ExportOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons"
 import { useEffect, useState } from "react"
 import { callFetchBooks } from "../../../services/api"
 import BookViewDetail from "./BookViewDetail"
+import BookModalCreate from "./BookModalCreate"
 
 const BookTable = () => {
 
@@ -20,6 +21,7 @@ const BookTable = () => {
   const [openViewDetail, setOpenViewDetail] = useState(false);
   const [dataViewDetail, setDataViewDetail] = useState(null);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   useEffect(() => {
@@ -73,8 +75,9 @@ const BookTable = () => {
           <Button
             icon={<PlusOutlined />}
             type="primary"
-          // onClick={() => setOpenModalCreate(true)}
+            onClick={() => setIsModalOpen(true)}
           >Thêm mới</Button>
+
           <Button type='ghost'
           // onClick={() => {
           //   setFilter("");
@@ -187,7 +190,12 @@ const BookTable = () => {
         setOpenViewDetail={setOpenViewDetail}
         dataViewDetail={dataViewDetail}
         setDataViewDetail={setDataViewDetail}
+      />
 
+      <BookModalCreate
+        openModalCreate={isModalOpen}
+        setOpenModalCreate={setIsModalOpen}
+        fetchBooks={fetchBooks}
       />
     </>
   )
