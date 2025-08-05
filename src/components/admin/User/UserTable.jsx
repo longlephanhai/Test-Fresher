@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Table, Row, Col, Button, Space } from 'antd';
+import { Table, Row, Col, Button, Space, Popover, Popconfirm, notification } from 'antd';
 import InputSearch from './InputSearch';
-import { callFetchUsers } from '../../../services/api';
+import { callDeleteUser, callFetchUsers } from '../../../services/api';
 import UserViewDetail from './UserDetail';
 import { CloudUploadOutlined, ExportOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import UserModalCreate from './UserModalCreate';
@@ -55,6 +55,22 @@ const UserTable = () => {
         }
     }
 
+    const handleDeleteUser = async (id) => {
+        const response = await callDeleteUser(id);
+        if (response.data) {
+            fetchData();
+            notification.success({
+                message: "Xóa người dùng thành công",
+                description: "Người dùng đã được xóa thành công."
+            });
+        } else {
+            notification.error({
+                message: "Xóa người dùng thất bại",
+                description: "Đã có lỗi xảy ra khi xóa người dùng."
+            });
+        }
+    }
+
     const columns = [
         {
             title: 'ID',
@@ -95,7 +111,16 @@ const UserTable = () => {
                         setDataUpdate(record);
                         setOpenModalUpdate(true);
                     }}>Edit</Button>
-                    <Button>Delete</Button>
+                    <Popconfirm
+                        placement="leftTop"
+                        title={"Xác nhận xóa người dùng này?"}
+                        description="Bạn có chắc chắn muốn xóa người dùng này?"
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={() => { handleDeleteUser(record._id) }}
+                    >
+                        <span><Button>Delete</Button></span>
+                    </Popconfirm>
                 </Space>
             ),
         }
