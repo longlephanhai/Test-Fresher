@@ -3,6 +3,7 @@ import InputSearch from "./BookInputSearch"
 import { ExportOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons"
 import { useEffect, useState } from "react"
 import { callFetchBooks } from "../../../services/api"
+import BookViewDetail from "./BookViewDetail"
 
 const BookTable = () => {
 
@@ -15,6 +16,11 @@ const BookTable = () => {
   const [sortQuery, setSortQuery] = useState("sort=-updatedAt")
 
   const [query, setQuery] = useState(`current=${current}&pageSize=${pageSize}&${sortQuery}`)
+
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+  const [dataViewDetail, setDataViewDetail] = useState(null);
+
+
 
   useEffect(() => {
     fetchBooks()
@@ -90,10 +96,10 @@ const BookTable = () => {
       render: (text, record, index) => {
         return (
           <a href="#"
-          // onClick={() => {
-          //   setDataViewDetail(record);
-          //   setOpenViewDetail(true);
-          // }}
+            onClick={() => {
+              setDataViewDetail(record);
+              setOpenViewDetail(true);
+            }}
           >
             {record._id}
           </a>
@@ -175,6 +181,14 @@ const BookTable = () => {
           />
         </Col>
       </Row>
+
+      <BookViewDetail
+        openViewDetail={openViewDetail}
+        setOpenViewDetail={setOpenViewDetail}
+        dataViewDetail={dataViewDetail}
+        setDataViewDetail={setDataViewDetail}
+
+      />
     </>
   )
 }
