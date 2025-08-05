@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Row, Col, Button, Space, Popover, Popconfirm, notification } from 'antd';
+import { Table, Row, Col, Button, Space, Popconfirm, notification } from 'antd';
 import InputSearch from './InputSearch';
 import { callDeleteUser, callFetchUsers } from '../../../services/api';
 import UserViewDetail from './UserDetail';
@@ -187,8 +187,6 @@ const UserTable = () => {
                     }}>
                         <ReloadOutlined />
                     </Button>
-
-
                 </span>
             </div>
         )
