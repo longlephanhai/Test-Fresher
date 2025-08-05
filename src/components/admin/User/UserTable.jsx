@@ -7,6 +7,7 @@ import { CloudUploadOutlined, ExportOutlined, PlusOutlined, ReloadOutlined } fro
 import UserModalCreate from './UserModalCreate';
 import UserImport from './data/UserImport';
 import * as XLSX from 'xlsx';
+import UserModalUpdate from './UserModalUpdate';
 
 
 const UserTable = () => {
@@ -27,6 +28,8 @@ const UserTable = () => {
 
     const [openModalImport, setOpenModalImport] = useState(false);
 
+    const [openModalUpdate, setOpenModalUpdate] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState(null);
 
 
     const fetchData = async () => {
@@ -88,7 +91,10 @@ const UserTable = () => {
             title: 'Action',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button>Edit</Button>
+                    <Button onClick={() => {
+                        setDataUpdate(record);
+                        setOpenModalUpdate(true);
+                    }}>Edit</Button>
                     <Button>Delete</Button>
                 </Space>
             ),
@@ -200,6 +206,7 @@ const UserTable = () => {
             <UserModalCreate
                 openModalCreate={openModalCreate}
                 setOpenModalCreate={setOpenModalCreate}
+                fetchUser={fetchData}
             />
 
             <UserImport
@@ -207,6 +214,13 @@ const UserTable = () => {
                 setOpenModalImport={setOpenModalImport}
             />
 
+            <UserModalUpdate
+                openModalUpdate={openModalUpdate}
+                setOpenModalUpdate={setOpenModalUpdate}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+                fetchUser={fetchData}
+            />
         </>
     )
 }
