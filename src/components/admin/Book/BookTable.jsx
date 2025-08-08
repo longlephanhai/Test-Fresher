@@ -1,11 +1,12 @@
-import { Button, Col, Popconfirm, Row, Space, Table } from "antd"
+import { Button, Col, notification, Popconfirm, Row, Space, Table } from "antd"
 import InputSearch from "./BookInputSearch"
 import { ExportOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons"
 import { useEffect, useState } from "react"
-import { callFetchBooks } from "../../../services/api"
+import { callDeleteBook, callFetchBooks } from "../../../services/api"
 import BookViewDetail from "./BookViewDetail"
 import BookModalCreate from "./BookModalCreate"
 import BookModalUpdate from "./BookModalUpdate"
+import * as XLSX from 'xlsx';
 
 const BookTable = () => {
 
@@ -64,6 +65,33 @@ const BookTable = () => {
     setQuery(`current=${current}&pageSize=${pageSize}&${sortQuery}${queryExtra}`);
   }
 
+  const handleDeleteBook = async (id) => {
+    const response = await callDeleteBook(id);
+    if (response.data) {
+      fetchBooks();
+      notification.success({
+        message: "Xóa sách thành công",
+        description: "Sách đã được xóa thành công."
+      });
+    } else {
+      notification.error({
+        message: "Xóa sách thất bại",
+        description: "Đã có lỗi xảy ra khi xóa sách."
+      });
+    }
+  }
+
+  const exPortData = (data) => {
+    if (data && data.length > 0) {
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+      //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+      XLSX.writeFile(workbook, "DataBook.csv");
+    }
+  }
+
 
   // change button color: https://ant.design/docs/react/customize-theme#customize-design-token
   const renderHeader = () => {
@@ -74,7 +102,7 @@ const BookTable = () => {
           <Button
             icon={<ExportOutlined />}
             type="primary"
-          // onClick={() => { exPortData(data) }}
+            onClick={() => { exPortData(dataBooks) }}
           >Export</Button>
 
           <Button
@@ -95,6 +123,7 @@ const BookTable = () => {
       </div>
     )
   }
+
 
   const columns = [
     {
@@ -149,11 +178,11 @@ const BookTable = () => {
           </Button>
           <Popconfirm
             placement="leftTop"
-            title={"Xác nhận xóa người dùng này?"}
-            description="Bạn có chắc chắn muốn xóa người dùng này?"
+            title={"Xác nhận xóa sách này?"}
+            description="Bạn có chắc chắn muốn xóa sách này?"
             okText="Yes"
             cancelText="No"
-          // onConfirm={() => { handleDeleteUser(record._id) }}
+            onConfirm={() => { handleDeleteBook(record._id) }}
           >
             <span><Button>Delete</Button></span>
           </Popconfirm>
