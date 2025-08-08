@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { callFetchBooks } from "../../../services/api"
 import BookViewDetail from "./BookViewDetail"
 import BookModalCreate from "./BookModalCreate"
+import BookModalUpdate from "./BookModalUpdate"
 
 const BookTable = () => {
 
@@ -22,6 +23,10 @@ const BookTable = () => {
   const [dataViewDetail, setDataViewDetail] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  const [openModalUpdate, setOpenModalUpdate] = useState(false);
+  const [dataUpdate, setDataUpdate] = useState(null);
 
 
   useEffect(() => {
@@ -134,10 +139,11 @@ const BookTable = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button
-          // onClick={() => {
-          //   setDataUpdate(record);
-          //   setOpenModalUpdate(true);
-          // }}
+            onClick={() => {
+              setOpenModalUpdate(true);
+              setDataUpdate(record);
+
+            }}
           >
             Edit
           </Button>
@@ -196,6 +202,14 @@ const BookTable = () => {
         openModalCreate={isModalOpen}
         setOpenModalCreate={setIsModalOpen}
         fetchBooks={fetchBooks}
+      />
+
+      <BookModalUpdate
+        openModalUpdate={openModalUpdate}
+        setOpenModalUpdate={setOpenModalUpdate}
+        dataUpdate={dataUpdate}
+        setDataUpdate={setDataUpdate}
+        fetchBook={fetchBooks}
       />
     </>
   )
