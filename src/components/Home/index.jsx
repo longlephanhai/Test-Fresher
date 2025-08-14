@@ -65,11 +65,28 @@ const Home = () => {
     }
 
     const handleChangeFilter = (changedValues, values) => {
-        console.log(">>> check handleChangeFilter", changedValues, values)
+        if (changedValues.category) {
+            const cate = values.category;
+            if (cate && cate.length > 0) {
+                const f = cate.join(',');
+                setFilter(`category=${f}`)
+            } else {
+                setFilter('');
+            }
+        }
+
     }
 
-    const onFinish = (values) => {
 
+    const onFinish = (values) => {
+        if (values?.range?.from >= 0 && values?.range?.to >= 0) {
+            let f = `price>=${values?.range?.from}&price<=${values?.range?.to}`;
+            if (values?.category?.length) {
+                const cate = values?.category?.join(',');
+                f += `&category=${cate}`
+            }
+            setFilter(f);
+        }
     }
 
     const items = [
@@ -105,7 +122,10 @@ const Home = () => {
                                 <span> <FilterTwoTone />
                                     <span style={{ fontWeight: 500 }}> Bộ lọc tìm kiếm</span>
                                 </span>
-                                <ReloadOutlined title="Reset" onClick={() => form.resetFields()} />
+                                <ReloadOutlined title="Reset" onClick={() => {
+                                    form.resetFields();
+                                    setFilter("")
+                                }} />
                             </div>
                             <Divider />
                             <Form
@@ -166,7 +186,7 @@ const Home = () => {
                                     </Row>
                                     <div>
                                         <Button onClick={() => form.submit()}
-                                            style={{ width: "100%" }} type='primary'>Áp dụng</Button>
+                                            style={{ width: "100%", cursor: 'pointer' }} type='primary'>Áp dụng</Button>
                                     </div>
                                 </Form.Item>
                                 <Divider />
