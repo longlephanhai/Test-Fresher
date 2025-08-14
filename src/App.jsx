@@ -22,6 +22,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import './styles/reset.scss';
 import Header from './components/header';
 import LayoutAdmin from './components/admin/LayoutAdmin';
+import BookDetail from './pages/book_page';
 
 
 const Layout = () => {
@@ -67,8 +68,8 @@ export default function App() {
           element: <ContactPage />,
         },
         {
-          path: "book",
-          element: <BookPage />,
+          path: "book/:slug",
+          element: <BookDetail />,
         },
       ],
     },
@@ -86,11 +87,16 @@ export default function App() {
         },
         {
           path: "user",
-          element: <ContactPage />,
+          element:
+            <ProtectedRoute>
+              <ContactPage />
+            </ProtectedRoute>
         },
         {
           path: "book",
-          element: <BookPage />,
+          element: <ProtectedRoute>
+            <BookPage />
+          </ProtectedRoute>,
         },
       ],
     },
