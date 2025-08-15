@@ -6,13 +6,12 @@ import ModalGallery from './ModalGallery';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { BsCartPlus } from 'react-icons/bs';
 import BookLoader from './BookLoader';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/order/orderSlice';
 
 const BookDetail = (props) => {
 
   const { data, loading } = props
-
-  // console.log(data.thumbnail);
-
 
   const [isOpenModalGallery, setIsOpenModalGallery] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,6 +19,8 @@ const BookDetail = (props) => {
   const refGallery = useRef(null);
 
   const [images, setImages] = useState([])
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (data) {
@@ -43,64 +44,6 @@ const BookDetail = (props) => {
     }
   }, [data])
 
-  console.log(images);
-
-  // const images = [
-  //   {
-  //     original: 'https://picsum.photos/id/1018/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1018/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1015/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1015/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1019/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1019/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1018/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1018/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1015/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1015/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1019/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1019/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1018/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1018/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1015/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1015/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  //   {
-  //     original: 'https://picsum.photos/id/1019/1000/600/',
-  //     thumbnail: 'https://picsum.photos/id/1019/250/150/',
-  //     originalClass: "original-image",
-  //     thumbnailClass: "thumbnail-image"
-  //   },
-  // ];
 
   const handleOnClickImage = () => {
     //get current index onClick
@@ -110,9 +53,41 @@ const BookDetail = (props) => {
     // refGallery?.current?.fullScreen()
   }
 
-  const onChange = (value) => {
-    console.log('changed', value);
-  };
+  const [currentQuantity, setCurrentQuantity] = useState(1);
+
+  const handleChangeQuantity = (type) => {
+    if (type === "PLUS") {
+      setCurrentQuantity(currentQuantity + 1);
+    }
+    if (type === "MINUS") {
+      if (currentQuantity > 1) {
+        setCurrentQuantity(currentQuantity - 1);
+      }
+    }
+  }
+
+  const handleOnChangeInputQuantity = (quantity) => {
+    setCurrentQuantity(+quantity)
+    if (isNaN(+quantity) || +quantity < 1) {
+      setCurrentQuantity(1);
+    } else if (+quantity > data?.quantity) {
+      setCurrentQuantity(data?.quantity)
+    }
+    else {
+      setCurrentQuantity(+quantity);
+    }
+  }
+
+  const handleAddToCart = () => {
+    console.log("Add to cart", currentQuantity);
+    console.log("Book data", data);
+    const dataCart = {
+      quantity: currentQuantity,
+      _id: data?._id,
+      detail: data
+    }
+    dispatch(addToCart(dataCart))
+  }
 
   return (
     <div style={{ background: '#efefef', padding: "20px 0" }}>
@@ -170,13 +145,20 @@ const BookDetail = (props) => {
                     <div className='quantity'>
                       <span className='left-side'>Số lượng</span>
                       <span className='right-side'>
-                        <button ><MinusOutlined /></button>
-                        <input defaultValue={1} />
-                        <button><PlusOutlined /></button>
+                        <button onClick={() => { handleChangeQuantity("MINUS") }}><MinusOutlined /></button>
+                        <input
+                          type='number'
+                          min={1}
+                          max={data?.quantity}
+                          defaultValue={1}
+                          value={currentQuantity}
+                          onChange={(e) => { handleOnChangeInputQuantity(e.target.value) }}
+                        />
+                        <button onClick={() => { handleChangeQuantity("PLUS") }}><PlusOutlined /></button>
                       </span>
                     </div>
                     <div className='buy'>
-                      <button className='cart'>
+                      <button className='cart' onClick={handleAddToCart}>
                         <BsCartPlus className='icon-cart' />
                         <span>Thêm vào giỏ hàng</span>
                       </button>
