@@ -23,6 +23,7 @@ import './styles/reset.scss';
 import Header from './components/header';
 import LayoutAdmin from './components/admin/LayoutAdmin';
 import BookDetail from './pages/book_page';
+import BookDetailScreen from './pages/book_page';
 
 
 const Layout = () => {
@@ -69,7 +70,7 @@ export default function App() {
         },
         {
           path: "book/:slug",
-          element: <BookDetail />,
+          element: <BookDetailScreen />,
         },
       ],
     },
